@@ -1,10 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Item {
   @PrimaryGeneratedColumn()
   id: number;
-  
+
   @Column()
   name: string;
 
@@ -13,7 +13,7 @@ export class Item {
 
   @Column()
   price: number;
-  
+
   @Column()
   location: string;
 

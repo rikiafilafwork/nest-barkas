@@ -7,6 +7,6 @@ import { Item } from './item.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Item])],
   controllers: [ItemsController],
-  providers: [ItemsService]
+  providers: [ItemsService],
 })
 export class ItemsModule {}
