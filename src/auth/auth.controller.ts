@@ -1,13 +1,17 @@
-import { Body, Controller, Get, Post, Session } from '@nestjs/common';
+import { Body, Controller, Get, Post, Session, UseInterceptors } from '@nestjs/common';
 import { CreateUserDto } from '../users/dtos/create-user.dto';
 import { UsersService } from '../users/users.service';
 import { Serialize } from 'src/interceptors/serialize.interceptor';
 import { UserDto } from '../users/dtos/user.dto';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from '../auth/dtos/login-user.dto';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { CurrentUserInterceptor } from './interceptors/current-user.interceptor';
+import { User } from 'src/users/user.entity';
 
 @Controller('auth')
 @Serialize(UserDto)
+@UseInterceptors(CurrentUserInterceptor)
 export class AuthController {
   constructor(
     private usersService: UsersService,
@@ -38,8 +42,7 @@ export class AuthController {
   }
 
   @Get('/cookie')
-  async getAuthCookie(@Session() session: any) {
-    const user = await this.usersService.findOne(session.userId);
+  async getAuthCookie(@CurrentUser() user: User) {
     return user;
   }
 }
