@@ -68,6 +68,11 @@ export class UsersController {
     return user;
   }
 
+  @Post('/logout')
+  logout(@Session() session: any) {
+    session.userId = null;
+  }
+
   @Get('/auth/cookie')
   async getAuthCookie(@Session() session: any) {
     const user = await this.usersService.findOne(session.userId);
