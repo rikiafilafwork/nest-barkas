@@ -51,4 +51,39 @@ describe('AuthService', () => {
       service.register('foo', 'bar@gmail', 'baz'),
     ).rejects.toThrowError('Email sudah terdaftar');
   });
+
+  it('throws if user login with invalid email', async () => {
+    await expect(service.login('foo@gmail.com', 'bar')).rejects.toThrowError(
+      'Email tidak terdaftar',
+    );
+  });
+
+  it('throws if user login with invalid password', async () => {
+    fakeUsersService.findAll = () => {
+      return Promise.resolve([
+        { id: 1, name: 'foo', email: 'bar@gmail', password: 'baz' } as User,
+      ]);
+    };
+
+    await expect(service.login('bar@gmail', 'bar')).rejects.toThrowError(
+      'Password salah',
+    );
+  });
+
+  it('login success', async () => {
+    fakeUsersService.findAll = () => {
+      return Promise.resolve([
+        {
+          id: 1,
+          name: 'foo',
+          email: 'bar@gmail',
+          password:
+            'd8082762ce875517.f158da58bcff40711db2cb2ad59ab6e7cce3ffc9730fde3261cc8de302bf214331f0296b131751b038ceaff3de5d59ba2b514625c22a4ee17297333c6245601e',
+        } as User,
+      ]);
+    };
+
+    const user = await service.login('bar@gmail', 'baz');
+    expect(user).toBeDefined();
+  });
 });
