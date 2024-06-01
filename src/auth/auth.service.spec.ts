@@ -8,10 +8,17 @@ describe('AuthService', () => {
   let fakeUsersService: Partial<UsersService>;
 
   beforeEach(async () => {
+    const users: User[] = [];
+
     fakeUsersService = {
-      findAll: () => Promise.resolve([]),
+      findAll: (email: string) => {
+        const user = users.filter((user) => user.email === email);
+        return Promise.resolve(user);
+      },
       create: (name: string, email: string, password: string) => {
-        return Promise.resolve({ id: 1, name, email, password } as User);
+        const user = { id: Math.floor(Math.random() * 999999), name, email, password } as User;
+        users.push(user);
+        return Promise.resolve(user);
       },
     };
     const module: TestingModule = await Test.createTestingModule({
@@ -42,11 +49,7 @@ describe('AuthService', () => {
   });
 
   it('should fail create user with existing email', async () => {
-    fakeUsersService.findAll = () => {
-      return Promise.resolve([
-        { id: 1, name: 'foo', email: 'bar@gmail', password: 'baz' } as User,
-      ]);
-    };
+    await service.register('foo', 'bar@gmail', 'baz');
     await expect(
       service.register('foo', 'bar@gmail', 'baz'),
     ).rejects.toThrowError('Email sudah terdaftar');
@@ -59,11 +62,7 @@ describe('AuthService', () => {
   });
 
   it('throws if user login with invalid password', async () => {
-    fakeUsersService.findAll = () => {
-      return Promise.resolve([
-        { id: 1, name: 'foo', email: 'bar@gmail', password: 'baz' } as User,
-      ]);
-    };
+    await service.register('foo', 'bar@gmail', 'baz123');
 
     await expect(service.login('bar@gmail', 'bar')).rejects.toThrowError(
       'Password salah',
@@ -71,18 +70,7 @@ describe('AuthService', () => {
   });
 
   it('login success', async () => {
-    fakeUsersService.findAll = () => {
-      return Promise.resolve([
-        {
-          id: 1,
-          name: 'foo',
-          email: 'bar@gmail',
-          password:
-            'd8082762ce875517.f158da58bcff40711db2cb2ad59ab6e7cce3ffc9730fde3261cc8de302bf214331f0296b131751b038ceaff3de5d59ba2b514625c22a4ee17297333c6245601e',
-        } as User,
-      ]);
-    };
-
+    await service.register('foo', 'bar@gmail', 'baz');
     const user = await service.login('bar@gmail', 'baz');
     expect(user).toBeDefined();
   });
