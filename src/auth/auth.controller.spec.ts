@@ -40,10 +40,13 @@ describe('AuthController', () => {
   it('should login success', async () => {
     const session = {
       userId: -10,
-    }
-    const user = await controller.login({ email: 'foo', password: 'bar' }, session);
+    };
+    const user = await controller.login(
+      { email: 'foo', password: 'bar' },
+      session,
+    );
 
     expect(user).toEqual({ id: 1, email: 'foo', password: 'bar' });
     expect(session.userId).toEqual(1);
-  })
+  });
 });
