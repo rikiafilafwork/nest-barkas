@@ -13,7 +13,6 @@ describe('Auth Controller (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    setupApp(app);
     await app.init();
   });
 
@@ -21,15 +20,15 @@ describe('Auth Controller (e2e)', () => {
     return request(app.getHttpServer())
       .post('/auth/register')
       .send({
-        name: 'foo2',
-        email: 'foo2@gmail.com',
+        name: 'foo3',
+        email: 'foo3@gmail.com',
         password: 'foo',
       })
       .expect(201)
       .then(({ body }: request.Response) => {
         expect(body.id).toBeDefined();
-        expect(body.name).toBe('foo2');
-        expect(body.email).toBe('foo2@gmail.com');
+        expect(body.name).toBe('foo3');
+        expect(body.email).toBe('foo3@gmail.com');
       });
   });
 });
