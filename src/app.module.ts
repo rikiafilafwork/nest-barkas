@@ -8,14 +8,22 @@ import { User } from './users/user.entity';
 import { Item } from './items/item.entity';
 import { AuthModule } from './auth/auth.module';
 import cookieSession = require('cookie-session');
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: 'db.sqlite',
-      entities: [User, Item],
-      synchronize: true,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: `.env.${process.env.NODE_ENV}`
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'sqlite',
+        database: configService.get<string>('DB_NAME'),
+        entities: [User, Item],
+        synchronize: true,
+      })
     }),
     UsersModule,
     ItemsModule,
