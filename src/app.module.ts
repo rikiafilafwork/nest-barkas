@@ -14,7 +14,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: `.env.${process.env.NODE_ENV}`
+      envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -23,19 +23,22 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         database: configService.get<string>('DB_NAME'),
         entities: [User, Item],
         synchronize: true,
-      })
+      }),
     }),
     UsersModule,
     ItemsModule,
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService, {
-    provide: 'APP_PIPE',
-    useValue: new ValidationPipe({
-      whitelist: true
-    })
-  }],
+  providers: [
+    AppService,
+    {
+      provide: 'APP_PIPE',
+      useValue: new ValidationPipe({
+        whitelist: true,
+      }),
+    },
+  ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
