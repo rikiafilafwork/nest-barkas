@@ -15,7 +15,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
     UsersService,
     {
       provide: APP_INTERCEPTOR,
-      useValue: CurrentUserInterceptor,
+      useClass: CurrentUserInterceptor,
     },
   ],
 })
