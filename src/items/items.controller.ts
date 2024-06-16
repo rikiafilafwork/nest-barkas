@@ -4,8 +4,11 @@ import { ItemsService } from './items.service';
 import { AuthGuard } from '../guards/auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../users/user.entity';
+import { Serialize } from 'src/interceptors/serialize.interceptor';
+import { ItemDto } from './dtos/item-dto';
 
 @Controller('items')
+@Serialize(ItemDto)
 export class ItemsController {
   constructor(private itemsService: ItemsService) {}
   @Post()
