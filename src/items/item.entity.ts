@@ -21,7 +21,10 @@ export class Item {
   @Column()
   category: string;
 
-  @Column({default: false})
+  @Column({ default: 2020 })
+  year: number;
+
+  @Column({ default: false })
   approved: boolean;
 
   @ManyToOne(() => User, (user) => user.items)
